@@ -1,5 +1,5 @@
 return {
-    core = exports['qb-core']:GetCoreObject(),
+    core = exports["es_extended"]:getSharedObject(),
     speedType = 'KMH', -- KMH or MPH
     hudKeybind = 'I',
     isLowFuelChecked = true,

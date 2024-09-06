@@ -1,5 +1,6 @@
 local resetStress = false
 local Config = lib.load('config')
+ESX = exports["es_extended"]:getSharedObject()
 
 AddEventHandler('ox_inventory:openedInventory', function(source)
     TriggerClientEvent('ts_hud:client:hideHUD', source)
@@ -13,14 +14,14 @@ RegisterNetEvent('hud:server:GainStress', function(amount)
     if not Config.stress.enableStress then return end
 
     local src = source
-    local player = Config.core.Functions.GetPlayer(src)
+    local player = ESX.GetPlayerFromId(src)
     local newStress
     if not player then return end
     if not resetStress then
-        if not player.PlayerData.metadata.stress then
-            player.PlayerData.metadata.stress = 0
+        if not player.get('stress') then
+            player.set('stress', 0)
         end
-        newStress = player.PlayerData.metadata.stress + amount
+        newStress = player.get('stress') + amount
         if newStress <= 0 then newStress = 0 end
     else
         newStress = 0
@@ -28,7 +29,7 @@ RegisterNetEvent('hud:server:GainStress', function(amount)
     if newStress > 100 then
         newStress = 100
     end
-    player.Functions.SetMetaData('stress', newStress)
+    player.set('stress', newStress)
     TriggerClientEvent('hud:client:UpdateStress', src, newStress)
     TriggerClientEvent('ox_lib:notify', src, {
         description = 'Feeling More Stressed!',
@@ -40,14 +41,14 @@ RegisterNetEvent('hud:server:RelieveStress', function(amount)
     if not Config.stress.enableStress then return end
 
     local src = source
-    local player = Config.core.Functions.GetPlayer(src)
+    local player = ESX.GetPlayerFromId(src)
     local newStress
     if not player then return end
     if not resetStress then
-        if not player.PlayerData.metadata.stress then
-            player.PlayerData.metadata.stress = 0
+        if not player.get('stress') then
+            player.set('stress', 0)
         end
-        newStress = player.PlayerData.metadata.stress - amount
+        newStress = player.get('stress') - amount
         if newStress <= 0 then newStress = 0 end
     else
         newStress = 0
@@ -55,7 +56,7 @@ RegisterNetEvent('hud:server:RelieveStress', function(amount)
     if newStress > 100 then
         newStress = 100
     end
-    player.Functions.SetMetaData('stress', newStress)
+    player.set('stress', newStress)
     TriggerClientEvent('hud:client:UpdateStress', src, newStress)
     TriggerClientEvent('ox_lib:notify', src, {
         description = 'Feeling Less Stressed!',
